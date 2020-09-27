@@ -1,6 +1,6 @@
 import { User } from "../../src/domain/user";
 import { mockUser, mockError } from "../mocks/mockDomainObjects";
-import { app  } from "../../src/index";
+import { app  } from "../../src/app";
 import request from 'supertest';
 import { getUserById } from "../../src/services/userService";
 import { mocked } from "ts-jest/dist/utils/testing";
@@ -9,6 +9,7 @@ jest.mock('../../src/services/userService');
 describe ('user controller unit test cases', () => {
 
     let testUser: User;
+
 
     describe('GET /user', () => {
 
@@ -24,7 +25,8 @@ describe ('user controller unit test cases', () => {
             const result = await request(app).get('/user/1');
             expect(mockedDependency.mock.calls).toHaveLength(1);
             expect(result.status).toEqual(200);
-            return expect(result.body).toEqual(testUser);
+            expect(result.body.id).toEqual(testUser.id);
+            return expect(result.body.userName).toEqual(testUser.userName);
         });
 
         it('returns error with invalid id', async () => {
@@ -33,7 +35,7 @@ describe ('user controller unit test cases', () => {
             mockedDependency.mockReturnValueOnce(null);
             expect(mockedDependency.mock.calls).toHaveLength(1);
             expect(result.status).toEqual(400);
-            return expect(result.body).toEqual(mockError('User not found'))
+            expect(result.body).toEqual(mockError('User not found'))
         });
 
     })
