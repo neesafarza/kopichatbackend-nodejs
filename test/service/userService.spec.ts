@@ -53,14 +53,14 @@ describe ('user service unit test cases', () => {
 
         it ('will create user with valid username', async () => {
             mockedDependency.mockResolvedValueOnce(testUser);
-            const result = await createUser('testUser');
+            const result = await createUser({userName: 'testUser'});
             expect(mockedDependency).toBeCalledTimes(1);
             expect(result).toEqual(testUser);
         })
 
         it('will throw error with no username', async () => {
             try{
-                await createUser('');
+                await createUser({userName: ''});
                 fail('no exception thrown')
             } catch (e) {
                 expect(mockedDependency).toBeCalledTimes(0);
@@ -72,7 +72,7 @@ describe ('user service unit test cases', () => {
         it('will throw error if username taken', async () => {
             mockedDependency.mockRejectedValueOnce('userNameTaken');
             try {
-                await createUser('takenUserName')
+                await createUser({userName: 'taken user name'})
                 fail('no exception thrown')
             }catch(e) {
                 expect(mockedDependency).toBeCalledTimes(1);
