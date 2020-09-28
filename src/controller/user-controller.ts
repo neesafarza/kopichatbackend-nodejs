@@ -1,18 +1,33 @@
 import { RequestHandler } from "express";
 import { User } from "../domain/user";
-import { getUserById } from "../services/userService";
+import { getUserById, createUser } from "../services/userService";
 
-export const getUser = (req: any, res: any): void => {
-    const userId = req.params.id;
-    const user = getUserById(userId);
+export const getUser = async (req: any, res: any) => {
 
-    if (!user) {
-        res.status(400);
-        res.send({
-            message: 'User not found'
-        })
-    } else {
+    try{
+        const userId = req.params.id;
+    const user = await getUserById(userId);
         res.status(200);
         res.send(user);
+    } catch (e) {
+        res.status(400);
+        res.send({
+            message: e
+        })
+    }
+}
+
+export const postUser = async (req: any, res: any) => {
+
+    try{
+        const userJson = req.body;
+        const user = await createUser(userJson);
+        res.status(200);
+        res.send(user);
+    }catch (e) {
+        res.status(400);
+        res.send({
+            message: e
+        })
     }
 }
